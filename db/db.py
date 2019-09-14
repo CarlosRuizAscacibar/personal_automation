@@ -1,9 +1,11 @@
 import sqlite3
 import os
 import uuid
-MIGRATION_PATH = './db/migrations/'
+p = os.path.dirname(os.path.realpath(__file__))
+
+MIGRATION_PATH = p + '/migrations/'
 INTERNAL_TABLE_PREFIX = 'sys_'
-DATABASE_FILENAME = 'example.db'
+DATABASE_FILENAME = p+'/../personal_automation.db'
 
 def generate_uuid():
     return str(uuid.uuid1())

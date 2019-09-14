@@ -1,9 +1,13 @@
 #!/usr/bin/python
 
 import sys
-sys.path.append('db/')
-sys.path.append('util/')
+import os
+
+path = os.path.dirname(os.path.realpath(__file__))
+[sys.path.append(path +'/'+o) for o in os.listdir(path) if os.path.isdir(os.path.join(path,o))]
+
 import zank
+import notification
 import bottle
 import traceback
 
