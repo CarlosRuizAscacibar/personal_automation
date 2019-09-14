@@ -4,7 +4,7 @@ import passwords
 
 
 def send_notification(subject, text):
-    passwords.get_entry('mailgun')
+    mailgun = passwords.get_entry('mailgun')
     mailgun_key = mailgun.custom_properties['apikey']
 
     requests.post(
