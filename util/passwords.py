@@ -5,7 +5,7 @@ def open_vault():
     p = os.path.dirname(os.path.realpath(__file__))
     # password is in a file inside computer and service
     vault_pass = open(p + '/../pass.txt', 'r', encoding='utf-8').readline()
-    vault = pykeepass.PyKeePass('vault.kdbx', password=vault_pass)
+    vault = pykeepass.PyKeePass(p + '/../vault.kdbx', password=vault_pass)
     return vault
 
 
