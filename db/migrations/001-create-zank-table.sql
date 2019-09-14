@@ -1,0 +1,7 @@
+
+
+CREATE TABLE IF NOT EXISTS lend (
+    id CHAR(36) PRIMARY KEY,
+    external_id VARCHAR(255) NOT NULL,
+    cretion_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) 
