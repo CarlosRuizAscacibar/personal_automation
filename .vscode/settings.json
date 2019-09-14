@@ -1,7 +1,7 @@
 {
     "python.pythonPath": "c:\\Users\\Carlos\\Documents\\workspace\\personal_automation\\personal_automation_env\\Scripts\\python.exe",
     "python.linting.pylintArgs": [
-        "--init-hook='import sys; sys.path.append(\"c:\\Users\\Carlos\\Documents\\workspace\\personal_automation\\db\")'"
+        "--init-hook='import sys; sys.path.append(\"c:\\Users\\Carlos\\Documents\\workspace\\personal_automation\\db\"); sys.path.append(\"c:\\Users\\Carlos\\Documents\\workspace\\personal_automation\\util\")'"
     ],
     "sqltools.connections": [
         {

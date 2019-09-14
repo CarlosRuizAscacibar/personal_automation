@@ -1,31 +1,13 @@
 import sys
-sys.path.append('db/')
 import requests
-import pykeepass
 import json
 import db_zank
 import traceback
-try:
+import passwords
+import notification
 
-  # password is in a file inside computer and service
-  vault_pass = open('pass.txt','r',encoding='utf-8').readline()
-  vault = pykeepass.PyKeePass('vault.kdbx',password=vault_pass)
-
-  # collect passwords from kdbx
-  zank = [x for x in vault.entries if x.title == 'zank'][0]
-  mailgun = [x for x in vault.entries if x.title == 'mailgun'][0]
-  mailgun_key=mailgun.custom_properties['apikey']
-  
-  def notification(subject, text):
-    requests.post(
-        "https://api.mailgun.net/v3/sandbox251ead2c26cb4ebc912a952465022c6a.mailgun.org/messages",
-        auth=("api", mailgun_key),
-        data={"from": "Mailgun Sandbox <postmaster@sandbox251ead2c26cb4ebc912a952465022c6a.mailgun.org>",
-          "to": "Carlos Ruiz <swsafetydance@gmail.com>",
-          "subject": "Zank new loan",
-          "text": text}
-    )
-
+def check_zank_loans():
+  zank = passwords.get_entry('zank')
 
   headers = {
       'authority': 'www.zank.com.es',
@@ -76,11 +58,11 @@ try:
       db_zank.create_lend(new_loan_id)
 
   if len(added_loans) > 0:
-    notification("Personal Automation: "+ str(len(added_loans)) +" New loans", "There are " + str(len(added_loans)) + " new lends")
+    notification.send_notification("Personal Automation: "+ str(len(added_loans)) +" New loans", "There are " + str(len(added_loans)) + " new lends")
+    return 'Sent email'
   else:
-    print('No new lends')
-except:
-  notification("Exception in personal Automation",traceback.format_exc())
+    return 'No new lends'
+
 
 
 
