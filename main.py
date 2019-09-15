@@ -19,12 +19,12 @@ A basic bottle app skeleton
 
 app = application = bottle.Bottle()
 
-# @app.route('/static/<filename:path>')
-# def static(filename):
-#     '''
-#     Serve static files
-#     '''
-#     return bottle.static_file(filename, root='./static')
+@app.route('/static/<filename:path>')
+def static(filename):
+    '''
+    Serve static files
+    '''
+    return bottle.static_file(filename, root='./static')
 
 @app.route('/')
 def show_index():
