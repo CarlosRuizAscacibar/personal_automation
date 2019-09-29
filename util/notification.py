@@ -14,7 +14,8 @@ def send_notification(subject, text):
     msg['From'] = hotmail.username
     msg['To'] = "swsafetydance@gmail.com"
     msg['Subject'] = subject
-    msg.attach(MIMEText(message, 'plain'))
+    #msg.attach(MIMEText(message, 'plain'))
+    msg.attach(MIMEText(message, 'html'))
     server = smtplib.SMTP('smtp.live.com: 587')
     server.starttls()
     server.login(msg['From'], password)

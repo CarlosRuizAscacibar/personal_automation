@@ -4,13 +4,14 @@ import sys
 import os
 
 path = os.path.dirname(os.path.realpath(__file__))
-[sys.path.append(path +'/'+o) for o in os.listdir(path) if os.path.isdir(os.path.join(path,o))]
+[sys.path.append(path +'/'+o) 
+    for o in os.listdir(path) if os.path.isdir(os.path.join(path,o))]
 
 import zank
 import notification
 import bottle
 import traceback
-
+import evo
 
 '''
 A basic bottle app skeleton
@@ -37,6 +38,15 @@ def show_index():
 def check_zank():
     try:
         return zank.check_zank_loans()
+    except:
+        notification.send_notification("Exception in personal Automation",traceback.format_exc())
+        return traceback.format_exc()
+
+@app.route('/evo_weekly')
+def evo_weekly():
+    try:
+        notification.send_notification("EVO Weekly report",evo.weekly_report_html())
+        # open('test.html','w',encoding='utf8',).write(evo.weekly_report_html())
     except:
         notification.send_notification("Exception in personal Automation",traceback.format_exc())
         return traceback.format_exc()

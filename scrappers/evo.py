@@ -1,0 +1,122 @@
+from decimal import Decimal
+import time
+import datetime
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.firefox.options import Options
+import pandas as pd
+import passwords
+import notification
+
+def wait_element_css(driver, css, wait=5):
+    r = WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, css))
+    )
+    time.sleep(.2)
+    return r
+
+
+def exists_element_css(driver, css):
+    result = None
+    try:
+        result = wait_element_css(driver, css, 1).is_displayed()
+    except:
+        result = False
+    return result
+
+
+def parse_movment_table(driver):
+    table = wait_element_css(driver, '#movimientosC_wrapper')
+    rows = []
+    for x in table.find_elements_by_tag_name('tr'):
+        fila = {}
+        for i, y in enumerate(x.find_elements_by_tag_name('td')):
+            if i == 1:
+                fila['fecha'] = y.text
+            if i == 2:
+                fila['descripcion'] = y.text
+            if i == 3:
+                fila['importe'] = y.text.replace(
+                    '-', '').replace(',', '.').replace('EUR', '').strip()
+                if y.text.count('-') > 0:
+                    fila['signo'] = '-'
+                else:
+                    fila['signo'] = '+'
+        if len(fila.keys()) > 0 and not (i == 3 and y.text.count('-') == 0):
+            rows.append(fila)
+    return rows
+
+
+def scrap_evo():
+    mattr = None
+    saldo = None
+    try:
+        options = Options()
+        options.headless = True
+        driver = webdriver.Firefox(options=options)
+        driver.get('https://www.evobanco.com/')
+        time.sleep(2)
+        wait_element_css(driver, '#client_login').click()
+        vault_evo = passwords.get_entry('evo')
+        username = driver.find_element_by_css_selector(
+            'form#form1 div.form_row input[type="text"]')
+        password = driver.find_element_by_css_selector(
+            'form#form1 div.form_row input[type="password"]')
+
+        username.send_keys(vault_evo.username)
+        pass_element_id = password.get_attribute('id')
+        driver.execute_script(f'document.querySelector("#{pass_element_id}").value ="{vault_evo.password}"')
+        wait_element_css(driver, '#continuar').click()
+        saldo = wait_element_css(driver,'#cant_saldo').text
+        wait_element_css(driver, '#movimientosCta__0').click()
+        next_movments_page_css_id = '#movimientosC_next'
+        mattr = parse_movment_table(driver)
+        while exists_element_css(driver, next_movments_page_css_id):
+            wait_element_css(driver, next_movments_page_css_id).click()
+            mattr.extend(parse_movment_table(driver))
+            time.sleep(0.5)
+    finally:
+        if driver != None:
+            driver.close()    
+        return (mattr, saldo)
+
+
+def get_df_periodo(mattr,days=8):
+    dates = [datetime.datetime.strftime(datetime.datetime.today() + datetime.timedelta(days=-x), "%d/%m/%Y") for x in range(8)]
+
+    acum = {}
+    for x in mattr:
+        if x['fecha'] in dates:
+            if list(acum.keys()).count(x['fecha']) == 0:
+                acum[x['fecha']] = 0
+            acum[x['fecha']] = acum[x['fecha']] + Decimal(x['importe'])
+    acum
+
+
+    df = pd.DataFrame(mattr)
+    df['importe'] = df.apply(lambda x: Decimal(x['importe']), axis=1)
+
+    df_periodo = pd.merge(pd.Series(dates, name="fecha"),
+                        df, how='inner', on="fecha")
+    df_agg_dia = df_periodo.groupby('fecha').agg(
+        lambda x: x.sum() if x.name == 'importe' else ' ; '.join(x))
+    return (df_periodo, df_agg_dia)
+
+def weekly_report_html():
+    """
+        Creates HTML report to send by email
+    """
+    report_html = ''
+    mattr, saldo = scrap_evo()
+    report_html = report_html + f'<h2>Saldo {saldo}</h2>'
+    df_periodo, df_agg_dia = get_df_periodo(mattr)
+    total_periodo = df_periodo['importe'].sum()
+    report_html = report_html + f'<h2>Total gastado estos 7 días {total_periodo}</h2>'
+    report_html = report_html + f'<h3>Gastos estos 7 días</h3>'
+    report_html = report_html + df_periodo.to_html()
+    report_html = report_html + f'<h3>Gastos estos 7 días por día</h3>'
+    report_html = report_html + df_agg_dia.to_html()
+    return report_html
+
