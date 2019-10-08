@@ -39,7 +39,7 @@ def parse_movment_table(driver):
                 fila['descripcion'] = y.text
             if i == 3:
                 fila['importe'] = y.text.replace(
-                    '-', '').replace(',', '.').replace('EUR', '').strip()
+                    '-', '').replace('.','').replace(',', '.').replace('EUR', '').strip()
                 if y.text.count('-') > 0:
                     fila['signo'] = '-'
                 else:
@@ -100,7 +100,7 @@ def get_df_periodo(mattr,days=8):
 
     df_periodo = pd.merge(pd.Series(dates, name="fecha"),
                         df, how='inner', on="fecha")
-    df_agg_dia = df_periodo.groupby('fecha').agg(
+    df_agg_dia = df_periodo[df_periodo['signo'] == '-'].groupby('fecha').agg(
         lambda x: x.sum() if x.name == 'importe' else ' ; '.join(x))
     return (df_periodo, df_agg_dia)
 
@@ -112,10 +112,10 @@ def weekly_report_html():
     mattr, saldo = scrap_evo()
     report_html = report_html + f'<h2>Saldo {saldo}</h2>'
     df_periodo, df_agg_dia = get_df_periodo(mattr)
-    total_periodo = df_periodo['importe'].sum()
+    total_periodo = df_periodo[df_periodo['signo'] == '-']['importe'].sum()
     report_html = report_html + f'<h2>Total gastado estos 7 días {total_periodo}</h2>'
     report_html = report_html + f'<h3>Gastos estos 7 días</h3>'
-    report_html = report_html + df_periodo.to_html()
+    report_html = report_html + df_periodo[df_periodo['signo'] == '-'].to_html()
     report_html = report_html + f'<h3>Gastos estos 7 días por día</h3>'
     report_html = report_html + df_agg_dia.to_html()
     return report_html
