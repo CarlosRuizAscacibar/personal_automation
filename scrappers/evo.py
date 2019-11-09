@@ -9,6 +9,7 @@ from selenium.webdriver.firefox.options import Options
 import pandas as pd
 import passwords
 import notification
+import browser
 
 def wait_element_css(driver, css, wait=5):
     r = WebDriverWait(driver, 5).until(
@@ -53,9 +54,7 @@ def scrap_evo():
     mattr = None
     saldo = None
     try:
-        options = Options()
-        options.headless = True
-        driver = webdriver.Firefox(options=options)
+        driver = browser.init_browser()
         driver.get('https://www.evobanco.com/')
         time.sleep(2)
         wait_element_css(driver, '#client_login').click()
@@ -108,12 +107,16 @@ def weekly_report_html():
     """
         Creates HTML report to send by email
     """
+    budget=1100
     report_html = ''
     mattr, saldo = scrap_evo()
     report_html = report_html + f'<h2>Saldo {saldo}</h2>'
     df_periodo, df_agg_dia = get_df_periodo(mattr)
+    df_periodo_mes, df_agg_mes_dias = get_df_periodo(mattr, days=datetime.date.today().day + 1)
     total_periodo = df_periodo[df_periodo['signo'] == '-']['importe'].sum()
+    total_mes = df_periodo_mes[df_periodo_mes['signo'] == '-']['importe'].sum()
     report_html = report_html + f'<h2>Total gastado estos 7 días {total_periodo}</h2>'
+    report_html = report_html + f'<h3>Total gastado este mes {total_mes} {total_mes*100/budget}</h3>'
     report_html = report_html + f'<h3>Gastos estos 7 días</h3>'
     report_html = report_html + df_periodo[df_periodo['signo'] == '-'].to_html()
     report_html = report_html + f'<h3>Gastos estos 7 días por día</h3>'

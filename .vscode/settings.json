@@ -8,6 +8,13 @@
             "database": ".\\example.db",
             "dialect": "SQLite",
             "name": "Personal Automation DB"
+        },
+        {
+            "database": "personal_automation.db",
+            "dialect": "SQLite",
+            "isActive": false,
+            "isConnected": false,
+            "name": "pa"
         }
     ],
     "sqltools.useNodeRuntime": true

@@ -12,6 +12,8 @@ import notification
 import bottle
 import traceback
 import evo
+import fotocasa
+import log
 
 '''
 A basic bottle app skeleton
@@ -56,6 +58,21 @@ def evo_weekly():
 #     Return a page that has been rendered using a template
 #     '''
 #     return template('page', page_name=page_name)
+@app.route('/fotocasa_periodic_scrap')
+def fotocasa_periodic_scrap():
+    try:
+        fotocasa.periodic_scrap()
+    except:
+        notification.send_notification("Exception in personal Automation",traceback.format_exc())
+        return traceback.format_exc()
+    
+@app.route('/fotocasa_update_all')
+def fotocasa_update_all():
+    try:
+        fotocasa.update_all()
+    except:
+        notification.send_notification("Exception in personal Automation",traceback.format_exc())
+        return traceback.format_exc()
 
 class StripPathMiddleware(object):
     '''

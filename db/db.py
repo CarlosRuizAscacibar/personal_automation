@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import uuid
+import json
 p = os.path.dirname(os.path.realpath(__file__))
 
 MIGRATION_PATH = p + '/migrations/'
@@ -65,6 +66,47 @@ def run_pending_migrations():
     connection = connect_db()
     for m in migrations_to_apply:
         apply_migraton(m,connection)
+    connection.close()
+
+def value_to_sql(value):
+    sql_value = ''
+    if type(value).__name__ == 'datetime.datetime':
+        sql_value = value.strftime("%Y-%m-%d %H:%M:%S")
+    elif type(value).__name__ == 'dict' or type(value) == 'list':
+        sql_value = json.dumps(value)
+    else:
+        sql_value = value
+    return sql_value
+
+def generic_insert(dictionary, table_name):
+    connection = connect_db()
+    i = f"""
+    INSERT INTO
+    {table_name}
+    ({", ".join(dictionary.keys())})
+    values
+    ({",".join(['?' for tmp in dictionary.keys()])})
+    """
+    params = [ value_to_sql(y) for y in dictionary.values() ]
+    connection.execute(i,params)
+    connection.commit()
+    connection.close()
+
+def generic_update(dictionary, table_name):
+    connection = connect_db()
+    id_to_update = dictionary['id']
+    new_values = [tmp + '=?' for tmp in dictionary.keys() if tmp != 'id']
+    set_columns = ", ".join(new_values)
+    sql_statement = f"""
+    UPDATE {table_name}
+    SET
+    {set_columns}
+    WHERE
+    id='{id_to_update}'
+    """
+    params = [ value_to_sql(y[1]) for y in dictionary.items() if y[0] != 'id']
+    connection.execute(sql_statement, params)
+    connection.commit()
     connection.close()
 
 init()

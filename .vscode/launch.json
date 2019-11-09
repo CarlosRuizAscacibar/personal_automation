@@ -14,6 +14,42 @@
             // "env": {
             //     "PYTHONPATH": ".;./db"
             // }
+        },
+        {
+            "name": "Python: Cron evo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cron.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--single_job=evo"],
+            "env": {
+                "PA_HEADLESS": "yes"
+            }
+        },
+        {
+            "name": "Python: Cron fotocasa",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cron.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--single_job=fotocasa"],
+            "env": {
+                "PA_HEADLESS": "yes"
+            }
+        },
+        {
+            "name": "Python: Cron fotocasa update all",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cron.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--single_job=fotocasa_update_all"],
+            "env": {
+                "PA_HEADLESS": "yes"
+            }
         }
     ]
 }

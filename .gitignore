@@ -2,4 +2,6 @@ personal_automation_env/
 pass.txt
 *.pyc
 *.db
+notebook.py
 geckodriver.log
+objectdb
