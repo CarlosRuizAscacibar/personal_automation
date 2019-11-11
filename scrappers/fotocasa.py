@@ -8,7 +8,7 @@ import json
 import os
 import fotocasa_db
 import browser
-
+from log import _print
 
 def save_page_html(html, filename="test.html"):
     f = open(filename, "w", encoding="utf-8")
@@ -61,12 +61,14 @@ def scrap_obra_nueva(driver, ad_dir):
 
 def periodic_scrap():
     new_links = []
+    driver = None
     try:
         driver = browser.init_browser()
         existing_ad_ids = fotocasa_db.get_existing_ad_ids()
         found_existing_url = False
         now = datetime.datetime.now()
         now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+        _print(f'Begin periodic scrap now_str:{now_str}')
         j = 1
         existing_counter = 0
         while found_existing_url == False and existing_counter < 5:
@@ -93,7 +95,9 @@ def periodic_scrap():
                                 existing_counter = existing_counter - 1
 
             else:
+                _print('Found url that already existed in the db')
                 found_existing_url = True
+        _print(f'Found {len(new_links)} new links')
     finally:
         if driver != None:
             driver.close()
@@ -106,6 +110,7 @@ def update_all():
 
 def update_urls(urls):
     driver = browser.init_browser()
+    _print(f'Updating urls totals: {len(urls)}')
     try:
         for url in urls:
             driver.get("https://www.fotocasa.es" + url)

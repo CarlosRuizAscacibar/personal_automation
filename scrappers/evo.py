@@ -53,6 +53,7 @@ def parse_movment_table(driver):
 def scrap_evo():
     mattr = None
     saldo = None
+    driver = None
     try:
         driver = browser.init_browser()
         driver.get('https://www.evobanco.com/')

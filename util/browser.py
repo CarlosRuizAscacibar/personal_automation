@@ -13,4 +13,4 @@ def init_browser():
         opts.headless = True
     opts.binary_location = shutil.which('firefox')
     
-    return webdriver.Firefox(options=opts)
+    return webdriver.Firefox(options=opts, log_path='test.log')
