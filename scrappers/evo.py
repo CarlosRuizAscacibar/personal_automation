@@ -10,6 +10,7 @@ import pandas as pd
 import passwords
 import notification
 import browser
+import log
 
 def wait_element_css(driver, css, wait=5):
     r = WebDriverWait(driver, 5).until(
@@ -64,11 +65,12 @@ def scrap_evo():
             'form#form1 div.form_row input[type="text"]')
         password = driver.find_element_by_css_selector(
             'form#form1 div.form_row input[type="password"]')
-
         username.send_keys(vault_evo.username)
         pass_element_id = password.get_attribute('id')
         driver.execute_script(f'document.querySelector("#{pass_element_id}").value ="{vault_evo.password}"')
         wait_element_css(driver, '#continuar').click()
+
+        _print('Logged successfully on evo')
         saldo = wait_element_css(driver,'#cant_saldo').text
         wait_element_css(driver, '#movimientosCta__0').click()
         next_movments_page_css_id = '#movimientosC_next'
@@ -77,10 +79,11 @@ def scrap_evo():
             wait_element_css(driver, next_movments_page_css_id).click()
             mattr.extend(parse_movment_table(driver))
             time.sleep(0.5)
+        print(f'Has {len(mattr)} movments')
     finally:
         if driver != None:
             driver.close()    
-        return (mattr, saldo)
+    return (mattr, saldo)
 
 
 def get_df_periodo(mattr,days=8):
