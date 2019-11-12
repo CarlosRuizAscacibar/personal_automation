@@ -10,7 +10,7 @@ import pandas as pd
 import passwords
 import notification
 import browser
-import log
+from log import _print
 
 def wait_element_css(driver, css, wait=5):
     r = WebDriverWait(driver, 5).until(
@@ -56,9 +56,12 @@ def scrap_evo():
     saldo = None
     driver = None
     try:
+        _print(f'Start scraping')
         driver = browser.init_browser()
+        _print(f'Browser starts')
         driver.get('https://www.evobanco.com/')
         time.sleep(2)
+        _print(f'On evo.com')
         wait_element_css(driver, '#client_login').click()
         vault_evo = passwords.get_entry('evo')
         username = driver.find_element_by_css_selector(
@@ -79,7 +82,7 @@ def scrap_evo():
             wait_element_css(driver, next_movments_page_css_id).click()
             mattr.extend(parse_movment_table(driver))
             time.sleep(0.5)
-        print(f'Has {len(mattr)} movments')
+        _print(f'Has {len(mattr)} movments')
     finally:
         if driver != None:
             driver.close()    
