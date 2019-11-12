@@ -1,2 +1,2 @@
-0 12 * * 1,5 PA_HEADLESS=yes; ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=evo >> cron_personal_automation.log
-5 * * * * PA_HEADLESS=yes; ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=fotocasa_periodic_scrap >> cron_personal_automation.log
+0 12 * * 1,5 export PA_HEADLESS=:yes && ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=evo >> cron_personal_automation.log
+5 * * * *  export PA_HEADLESS=:yes && ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=fotocasa >> cron_personal_automation.log
