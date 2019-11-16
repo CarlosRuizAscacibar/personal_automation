@@ -10,11 +10,6 @@ import fotocasa_db
 import browser
 from log import _print
 
-def save_page_html(html, filename="test.html"):
-    f = open(filename, "w", encoding="utf-8")
-    f.write(driver.page_source)
-    f.close()
-
 
 def get_text_css_element(driver, css):
     if len(driver.find_elements_by_css_selector(css)) > 0:
