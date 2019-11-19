@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import requests
 import passwords
+from log import _print
 
 
 def send_notification(subject, text):
@@ -21,7 +22,7 @@ def send_notification(subject, text):
     server.login(msg['From'], password)
     server.sendmail(msg['From'], msg['To'], msg.as_string())
     server.quit()
-    print("successfully sent email to %s:" % (msg['To']))
+    _print("successfully sent email to %s:" % (msg['To']))
 
 
 def send_notification_mailgun(subject, text):

@@ -115,6 +115,7 @@ def update_urls(urls):
     try:
         for url in urls:
             driver.get("https://www.fotocasa.es" + url)
+            time.sleep(3)
             for i in range(4):
                 driver.execute_script(f'window.scrollTo(0,{str(500*i)})')
                 time.sleep(.5)
