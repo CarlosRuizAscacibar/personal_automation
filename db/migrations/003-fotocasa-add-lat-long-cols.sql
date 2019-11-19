@@ -1,0 +1,2 @@
+ALTER TABLE fotocasa ADD COLUMN latitude DOUBLE NULL;
+ALTER TABLE fotocasa ADD COLUMN longitude DOUBLE NULL;

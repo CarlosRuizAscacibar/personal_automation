@@ -21,6 +21,12 @@ def get_text_css_element(driver, css):
 def scrap_segunda_mano(driver, ad_dir):
     ad_dir['label_slider'] = get_text_css_element(
         driver, '.re-DetailSlider-label')
+    l_latitude = l = re.findall(r'__INITIAL_PROPS__.*\\"latitude\\":(-?\d+\.?\d*)',driver.page_source)
+    if len(l_latitude) > 0:
+        ad_dir['latitude']=float(l_latitude[0])
+    l_longitude = l = re.findall(r'__INITIAL_PROPS__.*\\"longitude\\":(-?\d+\.?\d*)',driver.page_source)
+    if len(l_longitude) > 0:
+        ad_dir['longitude']=float(l_longitude[0])
     ad_dir['price'] = get_text_css_element(driver,'.re-DetailHeader-price')
     features = [x.text.replace('.', '') for x in driver.find_elements_by_css_selector(
         '.re-DetailHeader-featuresItem')]
