@@ -1,7 +1,7 @@
 # /bin/bash
 
 #is firefox installed
-firebox --version  > /dev/null 2&> /dev/null;
+firefox --version  > /dev/null 2&> /dev/null;
 is_installed=$?
 
 if ["$is_installed" -eq "0"]; then
@@ -29,3 +29,6 @@ sudo apt-get install libatlas-base-dev
 pip install -r requeriments.txt
 python -c "from shutil import which; print(which('firefox') != None)"
 
+
+#
+crontab example_crontab.txt

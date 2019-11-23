@@ -5,11 +5,9 @@
     ],
     "sqltools.connections": [
         {
-            "database": "personal_automation.db",
+            "database": "${workspaceFolder}\\personal_automation.db",
             "dialect": "SQLite",
-            "isActive": false,
-            "isConnected": false,
-            "name": "pa"
+            "name": "Personal Automation db"
         }
     ],
     "sqltools.useNodeRuntime": true

@@ -1,0 +1,12 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Download the DB",
+            "type": "shell",
+            "command": "scp -r pi@192.168.0.15:~/personal_automation/personal_automation.db ."
+        }
+    ]
+}
