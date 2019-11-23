@@ -6,19 +6,19 @@ RUN apt-get update && apt-get install -y cron
 RUN sudo apt-get install firefox-esr
 
 #installs geckodriver
-INSTALL_DIR="/usr/local/bin"
+RUN INSTALL_DIR="/usr/local/bin"
 
-url="https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz"
-curl -s -L "$url" | tar -xz
-chmod +x geckodriver
-sudo mv geckodriver "$INSTALL_DIR"
-echo "installed geckodriver binary in $INSTALL_DIR"
+RUN url="https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz"
+RUN curl -s -L "$url" | tar -xz
+RUN chmod +x geckodriver
+RUN sudo mv geckodriver "$INSTALL_DIR"
+RUN echo "installed geckodriver binary in $INSTALL_DIR"
 
 #configure virtual env
-pip install virtualenv
-python -m virtualenv env --python=/usr/bin/python3.7
-pip install -r requeriments.txt
+RUN pip install virtualenv
+RUN python -m virtualenv env --python=/usr/bin/python3.7
+RUN pip install -r requeriments.txt
 
 
 #add cronjobs
-crontab example_crontab.txt
+RUN crontab example_crontab.txt
