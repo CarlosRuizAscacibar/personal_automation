@@ -1,0 +1,12 @@
+PA_EVO_REPORT_OUTPUT: 
+    possible values email, console
+    where the evo repot will be outputed.
+
+PA_EVO_BUDGET:
+    Amount expected to spend each month from the evo account default '1100' €
+
+PA_HEADLESS:
+    Should start the browser headless or not
+
+PA_EXCEPTIONS: 
+    Where to output the exceptions console or email

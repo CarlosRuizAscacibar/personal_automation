@@ -1,3 +1,3 @@
-0 12 * * 1,5 ~/.profile; export PA_HEADLESS=:yes && ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=evo >> cron_personal_automation.log
-5 * * * *  ~/.profile; export PA_HEADLESS=:yes && ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=fotocasa >> cron_personal_automation.log
+0 12 * * 1,5 ~/.profile; export PA_HEADLESS=:yes; export PA_EXCEPTIONS=:email; PA_EVO_REPORT_OUTPUT=email; && ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=evo >> cron_personal_automation.log
+5 * * * *  ~/.profile; export PA_HEADLESS=:yes export PA_EXCEPTIONS=:email; PA_EVO_REPORT_OUTPUT=email; && ~/personal_automation/env/bin/python  ~/personal_automation/cron.py --single_job=fotocasa >> cron_personal_automation.log
 # Last line so it is a valid crontab

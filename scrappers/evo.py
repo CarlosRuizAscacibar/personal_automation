@@ -62,6 +62,7 @@ def scrap_evo():
         driver.get('https://www.evobanco.com/')
         time.sleep(2)
         _print(f'On evo.com')
+        time.sleep(2)
         wait_element_css(driver, '#client_login').click()
         vault_evo = passwords.get_entry('evo')
         username = driver.find_element_by_css_selector(
@@ -98,8 +99,6 @@ def get_df_periodo(mattr,days=8):
             if list(acum.keys()).count(x['fecha']) == 0:
                 acum[x['fecha']] = 0
             acum[x['fecha']] = acum[x['fecha']] + Decimal(x['importe'])
-    acum
-
 
     df = pd.DataFrame(mattr)
     df['importe'] = df.apply(lambda x: Decimal(x['importe']), axis=1)
@@ -110,11 +109,10 @@ def get_df_periodo(mattr,days=8):
         lambda x: x.sum() if x.name == 'importe' else ' ; '.join(x))
     return (df_periodo, df_agg_dia)
 
-def weekly_report_html():
+def weekly_report_html(budget):
     """
-        Creates HTML report to send by email
+        Creates HTML report
     """
-    budget=1100
     report_html = ''
     mattr, saldo = scrap_evo()
     report_html = report_html + f'<h2>Saldo {saldo}</h2>'
@@ -129,4 +127,23 @@ def weekly_report_html():
     report_html = report_html + f'<h3>Gastos estos 7 días por día</h3>'
     report_html = report_html + df_agg_dia.to_html()
     return report_html
+
+def weekly_report_text(budget):
+    """
+        Creates HTML report to send by email
+    """
+    report_text = ''
+    mattr, saldo = scrap_evo()
+    report_text = report_text + f'Saldo {saldo} \n'
+    df_periodo, df_agg_dia = get_df_periodo(mattr)
+    df_periodo_mes, df_agg_mes_dias = get_df_periodo(mattr, days=datetime.date.today().day + 1)
+    total_periodo = df_periodo[df_periodo['signo'] == '-']['importe'].sum()
+    total_mes = df_periodo_mes[df_periodo_mes['signo'] == '-']['importe'].sum()
+    report_text = report_text + f'Total gastado estos 7 días {total_periodo} \n'
+    report_text = report_text + f'Total gastado este mes {total_mes} {total_mes*100/budget}  \n'
+    report_text = report_text + f'Gastos estos 7 días  \n'
+    report_text = report_text + df_periodo[df_periodo['signo'] == '-'].to_string()
+    report_text = report_text + f'Gastos estos 7 días por día  \n'
+    report_text = report_text + df_agg_dia.to_string()
+    return report_text
 
