@@ -1,3 +1,4 @@
+#git clone 
 # /bin/bash
 
 #is firefox installed
@@ -14,7 +15,6 @@ fi
 INSTALL_DIR="/usr/local/bin"
 
 url="https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-arm7hf.tar.gz"
-url="https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz"
 curl -s -L "$url" | tar -xz
 chmod +x geckodriver
 sudo mv geckodriver "$INSTALL_DIR"
